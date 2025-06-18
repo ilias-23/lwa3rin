@@ -194,7 +194,7 @@
     }
 
     function loadDashboard(name) {
-      document.body.innerHTML = \`
+      document.body.innerHTML = `
         <div class="dashboard">
           <div class="menu-toggle" onclick="toggleMenu()">
             <span></span>
@@ -212,11 +212,11 @@
           </div>
           <div class="content-area" id="content">
             <div class="emoji">👋</div>
-            <h1 style="color: var(--accent); font-size: 32px;">Welcome, \${name.charAt(0).toUpperCase() + name.slice(1)}</h1>
+            <h1 style="color: var(--accent); font-size: 32px;">Welcome, ${name.charAt(0).toUpperCase() + name.slice(1)}</h1>
             <p>Explore the menu to get started.</p>
           </div>
         </div>
-      \`;
+      `;
     }
 
     function toggleMenu() {
@@ -228,13 +228,13 @@
       const content = document.getElementById("content");
       let html = "";
       if (section === "files") {
-        html = \`<div class='emoji'>📁</div><h2>Files</h2><p>Coming soon: shared group files!</p>\`;
+        html = `<div class='emoji'>📁</div><h2>Files</h2><p>Coming soon: shared group files!</p>`;
       } else if (section === "info") {
-        html = \`<div class='emoji'>ℹ️</div><h2>Information</h2><p>Group secrets and notes...</p>\`;
+        html = `<div class='emoji'>ℹ️</div><h2>Information</h2><p>Group secrets and notes...</p>`;
       } else if (section === "contact") {
-        html = \`<div class='emoji'>📞</div><h2>Contact</h2><p>List of members and contact info.</p>\`;
+        html = `<div class='emoji'>📞</div><h2>Contact</h2><p>List of members and contact info.</p>`;
       } else if (section === "todo") {
-        html = \`<div class='emoji'>📝</div><h2>To-do List</h2><ul><li>Plan group event</li><li>Update memes</li><li>Post funny story</li></ul>\`;
+        html = `<div class='emoji'>📝</div><h2>To-do List</h2><ul><li>Plan group event</li><li>Update memes</li><li>Post funny story</li></ul>`;
       }
       content.innerHTML = html;
     }
