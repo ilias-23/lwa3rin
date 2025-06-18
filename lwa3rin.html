@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LWA3RIN Login</title>
+  <style>
+    :root {
+      --accent: #00ffcc;
+      --bg: #0f0f0f;
+      --card: #1a1a1a;
+      --text: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 48px;
+      color: var(--accent);
+      margin-bottom: 30px;
+      letter-spacing: 4px;
+    }
+
+    .login-box {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      background: #222;
+      border: none;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+    }
+
+    button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00bfa1;
+    }
+
+    .error {
+      margin-top: 10px;
+      text-align: center;
+      color: red;
+    }
+
+    .dashboard {
+      padding: 20px;
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      height: 3px;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: 0.3s;
+    }
+
+    .side-panel {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--card);
+      transition: left 0.3s ease;
+      padding: 20px;
+      box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+
+    .side-panel.open {
+      left: 0;
+    }
+
+    .side-panel h3 {
+      margin-top: 0;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .side-panel ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .side-panel li {
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+    }
+
+    .content-area {
+      text-align: center;
+      margin-top: 100px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>LWA3RIN</h1>
+
+  <div class="login-box" id="loginBox">
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <div class="error" id="error"></div>
+  </div>
+
+  <script>
+    const users = {
+      ilias: "ilias123",
+      oussama: "oussama123",
+      fahd: "fahd123",
+      ismail: "ismail123",
+      adam: "adam123",
+      wail: "wail123"
+    };
+
+    function login() {
+      const username = document.getElementById("username").value.toLowerCase();
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
+
+      if (users[username] && users[username] === password) {
+        loadDashboard(username);
+      } else {
+        errorDiv.textContent = "Wrong username or password 😢";
+      }
+    }
+
+    function loadDashboard(name) {
+      document.body.innerHTML = `
+        <div class="dashboard">
+          <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="side-panel" id="sidePanel">
+            <h3>Menu</h3>
+            <ul>
+              <li onclick="navigate('files')">📁 Files</li>
+              <li onclick="navigate('info')">ℹ️ Information</li>
+              <li onclick="navigate('contact')">📞 Contact</li>
+              <li onclick="navigate('todo')">📝 To-do List</li>
+            </ul>
+          </div>
+          <div class="content-area" id="content">
+            <div class="emoji">👋</div>
+            <h1 style="color: var(--accent); font-size: 32px;">Welcome, ${name.charAt(0).toUpperCase() + name.slice(1)}</h1>
+            <p>Explore the menu to get started.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleMenu() {
+      const panel = document.getElementById("sidePanel");
+      panel.classList.toggle("open");
+    }
+
+    function navigate(section) {
+      const content = document.getElementById("content");
+      let html = "";
+      if (section === "files") {
+        html = `<div class='emoji'>📁</div><h2>Files</h2><p>Coming soon: shared group files!</p>`;
+      } else if (section === "info") {
+        html = `<div class='emoji'>ℹ️</div><h2>Information</h2><p>Group secrets and notes...</p>`;
+      } else if (section === "contact") {
+        html = `<div class='emoji'>📞</div><h2>Contact</h2><p>List of members and contact info.</p>`;
+      } else if (section === "todo") {
+        html = `<div class='emoji'>📝</div><h2>To-do List</h2><ul><li>Plan group event</li><li>Update memes</li><li>Post funny story</li></ul>`;
+      }
+      content.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
