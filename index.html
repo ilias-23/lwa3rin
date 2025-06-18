@@ -1,243 +1,1000 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LWA3RIN Login</title>
-  <style>
-    :root {
-      --accent: #00ffcc;
-      --bg: #0f0f0f;
-      --card: #1a1a1a;
-      --text: #ffffff;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LWA3RIN Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --accent: #00ffcc;
+    --bg: #0f0f0f;
+    --card: #1a1a1a;
+    --text: #ffffff;
+    --danger: #ff4444;
+  }
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* LOGIN */
+  #loginBox {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--card);
+    padding: 40px;
+    border-radius: 16px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+  }
+  #loginBox h1.logo {
+    font-size: 48px;
+    color: var(--accent);
+    margin-bottom: 30px;
+    letter-spacing: 5px;
+  }
+  #loginBox input {
+    background: #222;
+    border: none;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    width: 100%;
+  }
+  #loginBox button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    width: 100%;
+    transition: background 0.3s ease;
+  }
+  #loginBox button:hover {
+    background: #00bfa1;
+  }
+  #loginBox .error {
+    margin-top: 10px;
+    color: red;
+    text-align: center;
+  }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  /* MENU TOGGLE */
+  #menuToggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 30px;
+    cursor: pointer;
+    z-index: 9999;
+  }
+  #menuToggle span {
+    display: block;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 3px;
+  }
+  #menuToggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+  }
+  #menuToggle.open span:nth-child(2) {
+    opacity: 0;
+  }
+  #menuToggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+  /* SIDE PANEL */
+  #sidePanel {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background: var(--card);
+    transition: left 0.3s ease;
+    padding: 20px 15px 20px 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidePanel.open {
+    left: 0;
+  }
+  #sidePanel h3 {
+    margin-bottom: 35px; /* More space so text doesn't merge with X */
+    color: var(--accent);
+    user-select: none;
+    font-weight: 700;
+  }
+  #sidePanel ul {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidePanel li {
+    padding: 12px 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #sidePanel li:hover {
+    background: #222;
+  }
+  #sidePanel li.logout {
+    color: var(--danger);
+    margin-top: auto; /* Push to bottom */
+    font-weight: 700;
+  }
+  #sidePanel li.logout:hover {
+    background: #441111;
+  }
 
-    h1 {
-      font-size: 48px;
-      color: var(--accent);
-      margin-bottom: 30px;
-      letter-spacing: 4px;
-    }
+  /* CONTENT AREA */
+  #content {
+    padding: 40px;
+    animation: fadeIn 0.4s ease;
+    max-width: 700px;
+    margin: 0 auto;
+  }
 
-    .login-box {
-      background: var(--card);
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-      width: 320px;
-      display: flex;
-      flex-direction: column;
-    }
+  /* DASHBOARD WELCOME */
+  .welcome-center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    animation: fadeInUp 1s ease forwards;
+  }
+  .welcome-center .crown {
+    font-size: 80px;
+  }
+  .welcome-center h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0;
+    animation: fadeInText 2s ease forwards;
+  }
+  .welcome-footer {
+    margin-top: 40px;
+    font-size: 14px;
+    color: #888;
+    user-select: none;
+  }
 
-    input {
-      background: #222;
-      border: none;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-      color: white;
-      font-size: 14px;
-    }
+  /* FILES */
+  #filesList .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #222;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .file-name {
+    max-width: 70%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    color: var(--accent);
+  }
+  .file-actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 20px;
+    margin-left: 10px;
+    transition: color 0.2s ease;
+  }
+  .file-actions button:hover {
+    color: #00bfa1;
+  }
+  .favorite-file.filled {
+    color: gold;
+  }
 
-    button {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-      transition: background 0.3s ease;
-    }
+  /* CONTACT */
+  #contactList div {
+    margin-bottom: 12px;
+  }
+  .contact-btn {
+    cursor: pointer;
+    background: var(--accent);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  .contact-btn:hover:not(:disabled) {
+    background: #00bfa1;
+  }
+  .contact-btn:disabled {
+    background: #555;
+    cursor: default;
+  }
 
-    button:hover {
-      background: #00bfa1;
-    }
+  /* NOTIFICATIONS */
+  .notification-item {
+    background: #222;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+  .notification-text {
+    flex-grow: 1;
+  }
+  .notification-actions button {
+    cursor: pointer;
+    background: var(--accent);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: background 0.3s ease;
+  }
+  .notification-actions button:hover {
+    background: #00bfa1;
+  }
 
-    .error {
-      margin-top: 10px;
-      text-align: center;
-      color: red;
-    }
+  /* TODO LIST */
+  #todoList .todo-item {
+    background: #222;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .todo-text {
+    flex-grow: 1;
+    font-weight: 600;
+  }
+  .todo-date {
+    font-size: 14px;
+    color: #aaa;
+    white-space: nowrap;
+  }
+  .todo-delete-btn {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 20px;
+    transition: color 0.3s ease;
+  }
+  .todo-delete-btn:hover {
+    color: #ff6666;
+  }
+  #addReminderBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: background 0.3s ease;
+  }
+  #addReminderBtn:hover {
+    background: #00bfa1;
+  }
+  #addReminderForm {
+    margin-top: 20px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #addReminderForm input[type="text"],
+  #addReminderForm input[type="date"] {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #222;
+    color: #fff;
+    font-size: 14px;
+  }
+  #addReminderForm button[type="submit"] {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #addReminderForm button[type="submit"]:hover {
+    background: #00bfa1;
+  }
 
-    .dashboard {
-      padding: 20px;
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
-    .menu-toggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 24px;
-      height: 18px;
-      cursor: pointer;
-    }
-
-    .menu-toggle span {
-      height: 3px;
-      width: 100%;
-      background: var(--accent);
-      border-radius: 3px;
-      transition: 0.3s;
-    }
-
-    .side-panel {
-      position: fixed;
-      top: 0;
-      left: -250px;
-      width: 250px;
-      height: 100%;
-      background: var(--card);
-      transition: left 0.3s ease;
-      padding: 20px;
-      box-shadow: 5px 0 15px rgba(0,0,0,0.3);
-      z-index: 999;
-    }
-
-    .side-panel.open {
-      left: 0;
-    }
-
-    .side-panel h3 {
-      margin-top: 0;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-
-    .side-panel ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .side-panel li {
-      padding: 10px 0;
-      border-bottom: 1px solid #333;
-      cursor: pointer;
-    }
-
-    .content-area {
-      text-align: center;
-      margin-top: 100px;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .emoji {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInText {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 <body>
-  <h1>LWA3RIN</h1>
 
-  <div class="login-box" id="loginBox">
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <div class="error" id="error"></div>
+  <!-- LOGIN BOX -->
+  <div id="loginBox">
+    <h1 class="logo">LWA3RIN</h1>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button id="loginBtn">Login</button>
+    <div class="error" id="loginError"></div>
   </div>
 
-  <script>
-    const users = {
-      ilias: "ilias123",
-      oussama: "oussama123",
-      fahd: "fahd123",
-      ismail: "ismail123",
-      adam: "adam123",
-      wail: "wail123"
+  <!-- MENU TOGGLE -->
+  <div id="menuToggle" aria-label="Toggle menu" role="button" tabindex="0" style="display:none;">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <nav id="sidePanel" aria-label="Main menu" style="display:none;">
+    <h3>Menu</h3>
+    <ul>
+      <li id="menuWelcome">🏠 Home</li>
+      <li id="menuFiles">📁 Files</li>
+      <li id="menuContact">📞 Contact</li>
+      <li id="menuNotifications">🔔 Notifications</li>
+      <li id="menuTodo">📝 To-do List</li>
+      <li id="menuChat">💬 Chat</li>
+      <li class="logout" id="logoutBtn">🔒 Log out</li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main id="content"></main>
+
+  <!-- POPUP OVERLAY -->
+  <div id="popupOverlay" style="
+    display:none;
+    position: fixed;
+    top:0; left:0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  ">
+    <div id="popup" style="
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 400px;
+      width: 90%;
+      color: var(--text);
+      font-family: 'Quicksand', sans-serif;
+    ">
+      <!-- Popup content injected here -->
+    </div>
+  </div>
+
+<script>
+(() => {
+  // Constants & storage keys
+  const STORAGE_USER = 'lwa3rinUser';
+  const STORAGE_FILES = 'lwa3rinFiles';
+  const STORAGE_NOTIFS = 'lwa3rinNotifications';
+  const STORAGE_CONTACTS = 'lwa3rinContacts';
+  const STORAGE_TODOS = 'lwa3rinTodos';
+
+  // Sample users and passwords (lowercase usernames)
+  const users = {
+    ilias: "ilias123",
+    oussama: "oussama123",
+    fahd: "fahd123",
+    ismail: "ismail123",
+    adam: "adam123",
+    wail: "wail123"
+  };
+
+  // Cached DOM elements
+  const loginBox = document.getElementById('loginBox');
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const menuToggle = document.getElementById('menuToggle');
+  const sidePanel = document.getElementById('sidePanel');
+  const content = document.getElementById('content');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const popupOverlay = document.getElementById('popupOverlay');
+  const popup = document.getElementById('popup');
+
+  let currentUser = null;
+
+  // LOGIN HANDLER
+  loginBtn.addEventListener('click', () => {
+    const username = usernameInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+
+    if(users[username] && users[username] === password) {
+      currentUser = username;
+      localStorage.setItem(STORAGE_USER, currentUser);
+      loginError.textContent = '';
+      showDashboard();
+    } else {
+      loginError.textContent = "Wrong username or password 😢";
+    }
+  });
+
+  // Allow Enter key on inputs to trigger login
+  [usernameInput, passwordInput].forEach(input => {
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter') {
+        loginBtn.click();
+      }
+    });
+  });
+
+  // MENU TOGGLE HANDLER
+  menuToggle.addEventListener('click', () => {
+    sidePanel.classList.toggle('open');
+    menuToggle.classList.toggle('open');
+  });
+
+  // MENU NAVIGATION
+  document.getElementById('menuWelcome').addEventListener('click', () => {
+    renderWelcome();
+    closeMenu();
+  });
+  document.getElementById('menuFiles').addEventListener('click', () => {
+    renderFiles();
+    closeMenu();
+  });
+  document.getElementById('menuContact').addEventListener('click', () => {
+    renderContact();
+    closeMenu();
+  });
+  document.getElementById('menuNotifications').addEventListener('click', () => {
+    renderNotifications();
+    closeMenu();
+  });
+  document.getElementById('menuTodo').addEventListener('click', () => {
+    renderTodo();
+    closeMenu();
+  });
+  document.getElementById('menuChat').addEventListener('click', () => {
+    renderChat();
+    closeMenu();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_USER);
+    currentUser = null;
+    showLogin();
+  });
+
+  function closeMenu() {
+    sidePanel.classList.remove('open');
+    menuToggle.classList.remove('open');
+  }
+
+  // Show login view
+  function showLogin() {
+    loginBox.style.display = 'flex';
+    menuToggle.style.display = 'none';
+    sidePanel.style.display = 'none';
+    content.innerHTML = '';
+    usernameInput.value = '';
+    passwordInput.value = '';
+    loginError.textContent = '';
+  }
+
+  // Show dashboard view
+  function showDashboard() {
+    loginBox.style.display = 'none';
+    menuToggle.style.display = 'flex';
+    sidePanel.style.display = 'flex';
+    renderWelcome();
+  }
+
+  // Utility - capitalize first letter
+  function capitalize(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // WELCOME PAGE
+  function renderWelcome() {
+    content.innerHTML = `
+      <section class="welcome-center">
+        <div class="crown">👑</div>
+        <h1>Welcome, ${capitalize(currentUser)}</h1>
+        <div class="welcome-footer">Made by Ilias 23 ©</div>
+      </section>
+    `;
+  }
+
+  // FILES PAGE
+  function renderFiles() {
+    const files = loadFromStorage(STORAGE_FILES) || [];
+    content.innerHTML = `
+      <h2>📁 Files</h2>
+      <input type="file" id="fileInput" multiple style="margin-top:15px;" />
+      <div id="filesList"></div>
+    `;
+    const fileInput = document.getElementById('fileInput');
+    const filesList = document.getElementById('filesList');
+
+    function refreshFilesList() {
+      const updatedFiles = loadFromStorage(STORAGE_FILES) || [];
+      if(updatedFiles.length === 0) {
+        filesList.innerHTML = '<p>No files uploaded yet.</p>';
+        return;
+      }
+      filesList.innerHTML = '';
+      updatedFiles.forEach(f => {
+        const div = document.createElement('div');
+        div.classList.add('file-item');
+
+        // File name clickable link that opens the file dataURL in new tab
+        const fileName = document.createElement('div');
+        fileName.className = 'file-name';
+        fileName.title = f.name;
+        fileName.textContent = f.name;
+        fileName.style.userSelect = "text";
+        fileName.style.textDecoration = "underline";
+        fileName.style.color = "var(--accent)";
+        fileName.style.cursor = "pointer";
+        fileName.onclick = () => {
+          if(f.dataURL) {
+            // Open the file in new tab (works for images, pdf, etc.)
+            const win = window.open();
+            if(win) {
+              win.document.write(`<title>${f.name}</title><body style="margin:0"><iframe src="${f.dataURL}" frameborder="0" style="width:100vw; height:100vh;"></iframe></body>`);
+              win.document.close();
+            } else {
+              alert('Please allow popups to view files.');
+            }
+          } else {
+            alert('No preview available for this file.');
+          }
+        };
+
+        // Actions: Delete & Favorite
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'file-actions';
+        const delBtn = document.createElement('button');
+        delBtn.title = "Delete";
+        delBtn.className = "delete-file";
+        delBtn.textContent = "🗑️";
+        delBtn.onclick = () => {
+          let allFiles = loadFromStorage(STORAGE_FILES) || [];
+          allFiles = allFiles.filter(x => x.id !== f.id);
+          saveToStorage(STORAGE_FILES, allFiles);
+          refreshFilesList();
+        };
+        const favBtn = document.createElement('button');
+        favBtn.title = f.favorite ? 'Unfavorite' : 'Favorite';
+        favBtn.className = 'favorite-file' + (f.favorite ? ' filled' : '');
+        favBtn.textContent = '★';
+        favBtn.onclick = () => {
+          let allFiles = loadFromStorage(STORAGE_FILES) || [];
+          allFiles = allFiles.map(x => {
+            if(x.id === f.id) x.favorite = !x.favorite;
+            return x;
+          });
+          saveToStorage(STORAGE_FILES, allFiles);
+          refreshFilesList();
+        };
+        actionsDiv.appendChild(delBtn);
+        actionsDiv.appendChild(favBtn);
+
+        div.appendChild(fileName);
+        div.appendChild(actionsDiv);
+        filesList.appendChild(div);
+      });
+    }
+
+    fileInput.onchange = () => {
+      const fileList = Array.from(fileInput.files);
+      if(fileList.length === 0) return;
+
+      let storedFiles = loadFromStorage(STORAGE_FILES) || [];
+
+      fileList.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          storedFiles.push({
+            id: Date.now().toString() + Math.random().toString(16).slice(2),
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            dataURL: e.target.result,
+            favorite: false
+          });
+          saveToStorage(STORAGE_FILES, storedFiles);
+          refreshFilesList();
+        };
+        reader.readAsDataURL(file);
+      });
+      fileInput.value = '';
     };
 
-    function login() {
-      const username = document.getElementById("username").value.toLowerCase();
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("error");
+    refreshFilesList();
+  }
 
-      if (users[username] && users[username] === password) {
-        loadDashboard(username);
+  // CONTACT PAGE
+  function renderContact() {
+    content.innerHTML = `<h2>📞 Request Contact</h2><div id="contactList"></div>`;
+    const contactList = document.getElementById('contactList');
+    contactList.innerHTML = '';
+
+    let contactRequests = loadFromStorage(STORAGE_CONTACTS) || [];
+
+    // Show all users except current user
+    Object.keys(users).forEach(user => {
+      if(user === currentUser) return;
+
+      // Check if already requested
+      const requested = contactRequests.find(r => r.from === currentUser && r.to === user);
+
+      const div = document.createElement('div');
+      div.textContent = capitalize(user) + ' ';
+      const btn = document.createElement('button');
+      btn.textContent = requested ? 'Requested' : 'Request';
+      btn.className = 'contact-btn';
+      btn.disabled = !!requested;
+      btn.onclick = () => {
+        // Add notification for user 'to'
+        let notifications = loadFromStorage(STORAGE_NOTIFS) || [];
+        notifications.push({
+          id: Date.now().toString() + Math.random().toString(16).slice(2),
+          type: 'contact_request',
+          from: currentUser,
+          to: user,
+          status: 'pending'
+        });
+        saveToStorage(STORAGE_NOTIFS, notifications);
+
+        // Save in contacts to avoid duplicate requests
+        contactRequests.push({from: currentUser, to: user});
+        saveToStorage(STORAGE_CONTACTS, contactRequests);
+
+        btn.textContent = 'Requested';
+        btn.disabled = true;
+        alert(`Contact request sent to ${capitalize(user)}!`);
+      };
+      div.appendChild(btn);
+      contactList.appendChild(div);
+    });
+  }
+
+  // NOTIFICATIONS PAGE
+  function renderNotifications() {
+    content.innerHTML = `<h2>🔔 Notifications</h2><div id="notificationsList"></div>`;
+    const notificationsList = document.getElementById('notificationsList');
+
+    let notifications = (loadFromStorage(STORAGE_NOTIFS) || []).filter(n => n.to === currentUser);
+
+    if(notifications.length === 0) {
+      notificationsList.innerHTML = '<p>No notifications yet.</p>';
+      return;
+    }
+
+    notificationsList.innerHTML = '';
+
+    notifications.forEach(n => {
+      const div = document.createElement('div');
+      div.classList.add('notification-item');
+
+      if(n.type === 'contact_request' && n.status === 'pending') {
+        div.innerHTML = `
+          <div class="notification-text">${capitalize(n.from)} requested your contact info.</div>
+          <div class="notification-actions">
+            <button class="accept-btn" data-id="${n.id}">Accept</button>
+            <button class="reject-btn" data-id="${n.id}">Reject</button>
+          </div>
+        `;
+      } else if(n.type === 'contact_rejected') {
+        div.innerHTML = `
+          <div class="notification-text">${capitalize(n.from)} rejected your contact request.</div>
+          <div class="notification-actions">
+            <button class="dismiss-btn" data-id="${n.id}">Dismiss</button>
+          </div>
+        `;
+      } else if(n.type === 'contact_accepted') {
+        div.innerHTML = `
+          <div class="notification-text">${capitalize(n.from)} accepted your contact request. <button class="view-info-btn" data-id="${n.id}">View Info</button></div>
+          <div class="notification-actions">
+            <button class="dismiss-btn" data-id="${n.id}">Dismiss</button>
+          </div>
+        `;
+      }
+
+      notificationsList.appendChild(div);
+    });
+
+    // Accept contact request popup
+    notificationsList.querySelectorAll('.accept-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        const notif = notifications.find(n => n.id === id);
+        if (!notif) return;
+
+        showPopup(`
+          <h3>Accept Contact Request</h3>
+          <p>Provide contact info for <strong>${capitalize(notif.from)}</strong>:</p>
+          <label>Phone Number:<br><input type="text" id="phoneInput" placeholder="Phone number" /></label><br>
+          <label>Email:<br><input type="text" id="emailInput" placeholder="Email address" /></label><br>
+          <label>Instagram:<br><input type="text" id="instaInput" placeholder="Instagram username" /></label><br>
+          <button id="saveContactInfoBtn">Save</button>
+        `);
+
+        document.getElementById('saveContactInfoBtn').onclick = () => {
+          const phone = document.getElementById('phoneInput').value.trim();
+          const email = document.getElementById('emailInput').value.trim();
+          const insta = document.getElementById('instaInput').value.trim();
+
+          if(!phone && !email && !insta) {
+            alert('Please provide at least one contact info.');
+            return;
+          }
+
+          // Remove this notification
+          let allNotifs = loadFromStorage(STORAGE_NOTIFS) || [];
+          allNotifs = allNotifs.filter(n => n.id !== id);
+
+          // Add accepted notification for requester with contact info
+          allNotifs.push({
+            id: Date.now().toString() + Math.random().toString(16).slice(2),
+            type: 'contact_accepted',
+            from: currentUser,
+            to: notif.from,
+            info: { phone, email, insta }
+          });
+          saveToStorage(STORAGE_NOTIFS, allNotifs);
+          closePopup();
+          renderNotifications();
+          alert('Contact request accepted and info sent.');
+        };
+      };
+    });
+
+    // Reject contact request
+    notificationsList.querySelectorAll('.reject-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        const notif = notifications.find(n => n.id === id);
+        if (!notif) return;
+
+        let allNotifs = loadFromStorage(STORAGE_NOTIFS) || [];
+        allNotifs = allNotifs.filter(n => n.id !== id);
+
+        allNotifs.push({
+          id: Date.now().toString() + Math.random().toString(16).slice(2),
+          type: 'contact_rejected',
+          from: currentUser,
+          to: notif.from
+        });
+
+        saveToStorage(STORAGE_NOTIFS, allNotifs);
+        renderNotifications();
+      };
+    });
+
+    // Dismiss notification (for rejected or accepted)
+    notificationsList.querySelectorAll('.dismiss-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        let allNotifs = loadFromStorage(STORAGE_NOTIFS) || [];
+        allNotifs = allNotifs.filter(n => n.id !== id);
+        saveToStorage(STORAGE_NOTIFS, allNotifs);
+        renderNotifications();
+      };
+    });
+
+    // View contact info popup
+    notificationsList.querySelectorAll('.view-info-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        const allNotifs = loadFromStorage(STORAGE_NOTIFS) || [];
+        const notif = allNotifs.find(n => n.id === id);
+        if(!notif || !notif.info) return;
+
+        const { phone, email, insta } = notif.info;
+        let infoHTML = `<h3>Contact Info: ${capitalize(notif.from)}</h3><ul style="list-style:none; padding-left:0;">`;
+        if(phone) infoHTML += `<li>📞 Phone: ${phone}</li>`;
+        if(email) infoHTML += `<li>✉️ Email: ${email}</li>`;
+        if(insta) infoHTML += `<li>📸 Instagram: ${insta}</li>`;
+        infoHTML += '</ul><button id="closeInfoBtn">Close</button>';
+
+        showPopup(infoHTML);
+
+        document.getElementById('closeInfoBtn').onclick = closePopup;
+      };
+    });
+  }
+
+  // TODO PAGE
+  function renderTodo() {
+    let todos = loadFromStorage(STORAGE_TODOS) || [];
+    todos = todos.filter(t => t.user === currentUser);
+
+    content.innerHTML = `
+      <h2>📝 To-do List</h2>
+      <div id="todoList"></div>
+      <button id="addReminderBtn" style="display:none;">Add Another Reminder</button>
+      <form id="addReminderForm">
+        <input type="text" id="todoText" placeholder="Write something..." required />
+        <input type="date" id="todoDate" required />
+        <button type="submit">Save</button>
+      </form>
+    `;
+
+    const todoList = document.getElementById('todoList');
+    const addReminderBtn = document.getElementById('addReminderBtn');
+    const addReminderForm = document.getElementById('addReminderForm');
+    const todoTextInput = document.getElementById('todoText');
+    const todoDateInput = document.getElementById('todoDate');
+
+    function refreshTodoList() {
+      const allTodos = loadFromStorage(STORAGE_TODOS) || [];
+      const filtered = allTodos.filter(t => t.user === currentUser);
+
+      todoList.innerHTML = '';
+
+      if(filtered.length === 0) {
+        addReminderBtn.style.display = 'none';
+        addReminderForm.style.display = 'flex';
+        return;
       } else {
-        errorDiv.textContent = "Wrong username or password 😢";
+        addReminderBtn.style.display = 'block';
+        addReminderForm.style.display = 'none';
       }
+
+      filtered.forEach(todo => {
+        const div = document.createElement('div');
+        div.className = 'todo-item';
+        div.innerHTML = `
+          <div class="todo-text">${todo.text}</div>
+          <div class="todo-date">${todo.date}</div>
+          <button title="Delete reminder" class="todo-delete-btn" data-id="${todo.id}">🗑️</button>
+        `;
+        todoList.appendChild(div);
+      });
+
+      todoList.querySelectorAll('.todo-delete-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.getAttribute('data-id');
+          let allTodos = loadFromStorage(STORAGE_TODOS) || [];
+          allTodos = allTodos.filter(t => t.id !== id);
+          saveToStorage(STORAGE_TODOS, allTodos);
+          refreshTodoList();
+        };
+      });
     }
 
-    function loadDashboard(name) {
-      document.body.innerHTML = `
-        <div class="dashboard">
-          <div class="menu-toggle" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="side-panel" id="sidePanel">
-            <h3>Menu</h3>
-            <ul>
-              <li onclick="navigate('files')">📁 Files</li>
-              <li onclick="navigate('info')">ℹ️ Information</li>
-              <li onclick="navigate('contact')">📞 Contact</li>
-              <li onclick="navigate('todo')">📝 To-do List</li>
-            </ul>
-          </div>
-          <div class="content-area" id="content">
-            <div class="emoji">👋</div>
-            <h1 style="color: var(--accent); font-size: 32px;">Welcome, ${name.charAt(0).toUpperCase() + name.slice(1)}</h1>
-            <p>Explore the menu to get started.</p>
-          </div>
-        </div>
-      `;
-    }
+    refreshTodoList();
 
-    function toggleMenu() {
-      const panel = document.getElementById("sidePanel");
-      panel.classList.toggle("open");
-    }
+    addReminderBtn.onclick = () => {
+      addReminderForm.style.display = 'flex';
+      addReminderBtn.style.display = 'none';
+    };
 
-    function navigate(section) {
-      const content = document.getElementById("content");
-      let html = "";
-      if (section === "files") {
-        html = `<div class='emoji'>📁</div><h2>Files</h2><p>Coming soon: shared group files!</p>`;
-      } else if (section === "info") {
-        html = `<div class='emoji'>ℹ️</div><h2>Information</h2><p>Group secrets and notes...</p>`;
-      } else if (section === "contact") {
-        html = `<div class='emoji'>📞</div><h2>Contact</h2><p>List of members and contact info.</p>`;
-      } else if (section === "todo") {
-        html = `<div class='emoji'>📝</div><h2>To-do List</h2><ul><li>Plan group event</li><li>Update memes</li><li>Post funny story</li></ul>`;
-      }
-      content.innerHTML = html;
+    addReminderForm.onsubmit = e => {
+      e.preventDefault();
+      const text = todoTextInput.value.trim();
+      const date = todoDateInput.value;
+
+      if(!text || !date) return alert('Please fill out all fields.');
+
+      let allTodos = loadFromStorage(STORAGE_TODOS) || [];
+      allTodos.push({
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        user: currentUser,
+        text,
+        date
+      });
+      saveToStorage(STORAGE_TODOS, allTodos);
+
+      todoTextInput.value = '';
+      todoDateInput.value = '';
+      addReminderForm.style.display = 'none';
+      addReminderBtn.style.display = 'block';
+
+      refreshTodoList();
+    };
+  }
+
+  // CHAT PAGE
+  function renderChat() {
+    content.innerHTML = `
+      <h2>💬 Chat</h2>
+      <p>Chat coming soon!</p>
+    `;
+  }
+
+  // STORAGE UTILS
+  function loadFromStorage(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key));
+    } catch {
+      return null;
     }
-  </script>
+  }
+  function saveToStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  // POPUP HANDLERS
+  function showPopup(html) {
+    popup.innerHTML = html;
+    popupOverlay.style.display = 'flex';
+  }
+  function closePopup() {
+    popupOverlay.style.display = 'none';
+    popup.innerHTML = '';
+  }
+  popupOverlay.onclick = e => {
+    if(e.target === popupOverlay) closePopup();
+  };
+
+  // INIT APP
+  function init() {
+    const savedUser = localStorage.getItem(STORAGE_USER);
+    if(savedUser && users[savedUser]) {
+      currentUser = savedUser;
+      showDashboard();
+    } else {
+      showLogin();
+    }
+  }
+
+  init();
+})();
+</script>
+
 </body>
 </html>
